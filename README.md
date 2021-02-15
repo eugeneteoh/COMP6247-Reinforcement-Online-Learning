@@ -1,6 +1,6 @@
 # COMP6247-Labs
 
-University of Southampton 2020-2021 COMP6248 Reinforcement & Online Learning Lab Exercises.
+University of Southampton COMP6248 Reinforcement & Online Learning 2020-2021 Lab Exercises.
 
 Each lab directory contains lab sheet, LaTeX report and Python notebook.
 
