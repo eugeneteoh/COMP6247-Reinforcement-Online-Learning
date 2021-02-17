@@ -1,0 +1,29 @@
+
+
+2021-02-17 16:27:25 (15.3 MB/s) - ‘./data/archive.ics.uci.edu/ml/machine-learning-databases/00226/index.html’ saved [545/545]
+
+--2021-02-17 16:27:25--  https://archive.ics.uci.edu/ml/machine-learning-databases/00227/
+Reusing existing connection to archive.ics.uci.edu:443.
+HTTP request sent, awaiting response... 200 OK
+Length: 513 [text/html]
+Saving to: ‘./data/archive.ics.uci.edu/ml/machine-learning-databases/00227/index.html’
+
+
+
+2021-02-17 16:27:25 (15.3 MB/s) - ‘./data/archive.ics.uci.edu/ml/machine-learning-databases/00227/index.html’ saved [513/513]
+
+--2021-02-17 16:27:25--  https://archive.ics.uci.edu/ml/machine-learning-databases/00228/
+Reusing existing connection to archive.ics.uci.edu:443.
+HTTP request sent, awaiting response... 200 OK
+Length: 537 [text/html]
+Saving to: ‘./data/archive.ics.uci.edu/ml/machine-learning-databases/00228/index.html’
+
+
+
+2021-02-17 16:27:25 (19.7 MB/s) - ‘./data/archive.ics.uci.edu/ml/machine-learning-databases/00228/index.html’ saved [537/537]
+
+./data/archive.ics.uci.edu/ml/machine-learning-databases/00228/index.html: No such file or directory
+--2021-02-17 16:38:17--  https://archive.ics.uci.edu/ml/machine-learning-databases/00229/
+Connecting to archive.ics.uci.edu (archive.ics.uci.edu)|128.195.10.252|:443... failed: Operation timed out.
+Resolving archive.ics.uci.edu (archive.ics.uci.edu)... 128.195.10.252
+Connecting to archive.ics.uci.edu (archive.ics.uci.edu)|128.195.10.252|:443... connected.
