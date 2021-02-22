@@ -43,7 +43,7 @@ The task 1 of the exercise is to implement a simple linear regression on synthet
 
 Pearson correlation shows the strength of linear correlation. A strong linear correlation shows that the predicted values are close to the ground truth. All three methods show promising and very close results. Thus, it can be concluded that all three methods successfully estimated the linear regression. Out of the three, the closed form solution performed the best.
 
-The loss function of linear regression is always convex, hence there exist a closed form solution. However, if the number of features $p$ is large, the pseudo-inverse may be expensive to compute. The time complexity of matrix inversion using the Gaussian elimination is $\mathcal{O}(n^3)$, hence it does not scale well with larger matrices.
+The loss function of linear regression is always convex, hence there exist a closed form solution. However, if the number of features $p$ is large, the pseudo-inverse may be expensive to compute. The time complexity of matrix inversion (using Gaussian elimination) is $\mathcal{O}(n^3)$, hence it does not scale well with larger matrices.
 
 \begin{table}[h!]
     \centering
