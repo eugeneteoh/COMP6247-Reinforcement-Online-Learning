@@ -9,3 +9,5 @@ Each lab directory contains lab sheet, LaTeX report and Python notebook.
 [Lab 1: Recursive Least Squares](lab_1)
 
 [Lab 2: Kalman Filter](lab_2)
+
+[Lab 3: Kalman and Particle Filters; Online PCA](lab_3)
