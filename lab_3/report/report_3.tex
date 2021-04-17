@@ -5,6 +5,7 @@
 \renewcommand*{\fps@table}{!htb}
 \makeatother
 
+\usepackage[a4paper]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[hidelinks]{hyperref}
 \usepackage{amsmath, bm}
@@ -45,28 +46,19 @@ Initially, the Sequential Importance Sampling (SIS) algorithm described in \cite
 
 To solve weight degeneracy, an extra resampling step \cite{particle_filters} is added to the original SIS algorithm, which is then known as Sequential Importance Resampling (SIR). For every iteration, the weights are resampled to have equal sizes, shown in \cref{fig:sir-particle-weights}. \cref{fig:ess} shows the Effective Sample Size (ESS) before and after introducing the resampling step. With resampling introduced, larger number of particles are effectively accounted to the estimation of the posterior PDF.
 
-% TODO: mention that resampling doesnt have to happen at every iteration but when ESS is at a value below a threshold.
+% TODO: mention that resampling doesn't have to happen at every iteration but when ESS is at a value below a threshold.
 
-\cref{fig:results-1} shows the estimation of parameters $a_0$ and $a_1$ of the second-order time varying auto-regressive time series using a Kalman Filter implemented in \cite{lab2ans}, SIS and SIR. It is shown that all three algorithms did not provide ``smooth'' estimations. This is potentially due to the original process model described in \cite{lab2} being a random walk model instead of being non-linear. The Mean Squared Error (MSE) calculated for the three algorithm implies that the performance is in the order: SIS, KF, SIR.
+\cref{fig:results-1} shows the estimation of parameters $a_0$ and $a_1$ of the second-order time-varying auto-regressive time series using a Kalman Filter implemented in \cite{lab2ans}, SIS and SIR. It is shown that all three algorithms did not provide ``smooth'' estimations. This is potentially due to the original process model described in \cite{lab2} being a random walk model instead of being non-linear. The Mean Squared Error (MSE) calculated for the three algorithms implies that the performance is in the order: SIS, KF, SIR.
 
-\begin{comment}
-- N = 500; Ns = 100;
-
-- weight degeneracy
-- weights are < 1, therefore it will be infinitesimally small after it is multiplied by many times during weight update.
-- as large time index goes by, weight degeneracy occurs, ess converges to 1
-- the posterior pdf is only dependent on one particle, which is bad
-- can be solved by resampling
-\end{comment}
 
 \begin{figure}
     \begin{subfigure}{.5\textwidth}
-        \includegraphics[width=1.15\textwidth]{Figures/particle_weights_sis.pdf}
+        \includegraphics[width=\textwidth]{Figures/particle_weights_sis.pdf}
         \caption{SIS}
         \label{fig:sis-particle-weights}
     \end{subfigure}
     \begin{subfigure}{.5\textwidth}
-        \includegraphics[width=1.15\textwidth]{Figures/particle_weights_sir.pdf}
+        \includegraphics[width=\textwidth]{Figures/particle_weights_sir.pdf}
         \caption{SIR}
         \label{fig:sir-particle-weights}
     \end{subfigure}
@@ -76,21 +68,21 @@ To solve weight degeneracy, an extra resampling step \cite{particle_filters} is 
 
 \begin{figure}
     \centering
-    \includegraphics[width=.7\textwidth]{Figures/ess.pdf}
+    \includegraphics[width=.5\textwidth]{Figures/ess.pdf}
     \caption{Effective sample size of SIS and SIR algorithm.}
     \label{fig:ess}
 \end{figure}
 
 \begin{figure}
     \begin{subfigure}{.5\textwidth}
-        \includegraphics[width=1.15\textwidth]{Figures/coefficient_a0.pdf}
+        \includegraphics[width=\textwidth]{Figures/coefficient_a0.pdf}
     \end{subfigure}
     \begin{subfigure}{.5\textwidth}
-        \includegraphics[width=1.15\textwidth]{Figures/coefficient_a1.pdf}
+        \includegraphics[width=\textwidth]{Figures/coefficient_a1.pdf}
     \end{subfigure}
 
     \centering
-    \begin{subfigure}{.7\textwidth}
+    \begin{subfigure}{.6\textwidth}
         \includegraphics[width=\textwidth]{Figures/error.pdf}
     \end{subfigure}
     \caption{Plots of unknown parameters $a_0$ and $a_1$ estimated using KF, SIS and SIR, along with its squared errors. Mean Squared Error: (KF) 1.5617 (SIS) 1.6764 (SIR) 0.8354}
@@ -99,6 +91,77 @@ To solve weight degeneracy, an extra resampling step \cite{particle_filters} is 
 
 
 \section{Task 2}
+
+Task 2 presents derivations and results of the Extended Kalman Filter (EKF) algorithm for the logistic regression problem described in the Lab 3 exercise sheet. Extended Kalman Filter allows state estimation of non-linear Gaussian state-space models by approximating the non-linear function as its Taylor approximation to the first order. Non-linearity can be present in either or both state and observation models.
+
+Following the exercise sheet, consider we have a simple binary classification problem to be solved sequentially using a logistic regression. We have a state space model:
+
+\begin{equation}
+    \begin{split}
+        \pmb{\theta} (n) &= \pmb{\theta} (n-1) + \pmb{w}(n)\\
+        y(n) &= f(\pmb{\theta}(n), \pmb{x}_n) + v(n),
+    \end{split}
+\end{equation}
+
+with the non-linear function as the logistic regression:
+
+\begin{equation}
+    \begin{split}
+        f(\pmb{\theta}(n), \pmb{x}_n) &= g(\pmb{\theta}(n)^T \pmb{x}_n)\\
+        g(z) &= \frac{1}{1 + e^{-z}},
+    \end{split}
+    \label{eq:logistic}
+\end{equation}
+
+To approximate \cref{eq:logistic} as its first-order Taylor approximation, we first obtain the Jacobian of the function:
+
+As mentioned above, \cref{eq:logistic} can be approximated by it's first-order Taylor approximation:
+
+\begin{equation}
+    f(\pmb{\theta}(n), \pmb{x}_n) \approx f(\pmb{\theta}(n|n-1), \pmb{x}_n) + \pmb{\hat{F}}_n^T (\pmb{\theta}(n) - \pmb{\theta}(n|n-1))
+\end{equation}
+    
+where the Jacobian is described as:
+
+\begin{equation}
+     \pmb{\hat{F}}_n = \pmb{\hat{F}}(\pmb{\theta}(n|n-1), \pmb{x}_n) = g(\pmb{\theta}(n|n-1)^T \pmb{x}_n)(1 - g(\pmb{\theta}(n|n-1)^T \pmb{x}_n)) \pmb{x}_n
+\end{equation}
+
+With the approximation above, the Extended Kalman Filter equations for the logistic regression problem are:
+
+\begin{equation}
+    \begin{split}
+        \pmb{\theta}(n|n-1) &= \pmb{\theta}(n-1|n-1)\\
+        P(n|n-1) &= P(n-1|n-1) + Q\\
+        e(n) &= y(n) - f(\pmb{\theta}(n|n-1), \pmb{x}_n)\\
+        \pmb{\theta}(n|n) &= \pmb{\theta}(n|n-1) + \pmb{k}(n)e(n)\\
+        P(n|n) &= (I - \pmb{k}(n) \pmb{\hat{F}}_n) P(n|n-1)\\
+        \pmb{k}(n) &= \frac{P(n|n-1) \pmb{\hat{F}}_n^T}{R + \pmb{\hat{F}}_n P(n|n-1) \pmb{\hat{F}}_n^T}
+    \end{split}
+    \label{eq:ekf}
+\end{equation}
+
+\cref{eq:ekf} follows the same notation as in \cite{lab3}.
+
+The EKF algorithm described in \cref{eq:ekf} will be utilised to attempt to solve two binary classification problems with different $\alpha$, illustrated in \cref{fig:dataset}. The dataset is generated using Numpy following the instructions in \cite{lab3}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Figures/dataset.pdf}
+    \caption{Binary classification synthetic dataset with different mean $\alpha$.}
+    \label{fig:dataset}
+\end{figure}
+
+\cref{fig:error-lr} shows the error plot of both problems. It is shown that an increase in $\alpha$ allows for a better convergence of error. When $\alpha$ decreases, the problem becomes non-linearly separable. Hence, with $\alpha = 0.5$, the convergence of error is not possible with a linear classifier such as logistic regression. The best accuracy is calculated by taking the $\pmb{\theta}$ of the time step of the lowest error.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.7\textwidth]{Figures/error_lr.pdf}
+    \caption{Logistic regression squared error with different $\alpha$. Best accuracy: ($\alpha = 0.5$) 76.2\% ($\alpha = 2$) 99.8\%}
+    \label{fig:error-lr}
+\end{figure}
+
 
 \section{Task 3}
 

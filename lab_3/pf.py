@@ -114,6 +114,76 @@ def KF(sig, theta0, P0, Q, R):
 
     return thetaIter, errorIter
 
+def EKF_LR(X, y, theta0, P0, Q, R):
+    # time length
+    N = X.shape[0]
+
+    theta = np.zeros((N, 2))
+    P = np.zeros((N, 2, 2))
+    error = np.zeros(N)
+
+    # first two estimates are initial guesses
+    theta[:2] = theta0
+    P[:2] = P0
+
+    for n in range(2, N):
+        # predict step
+        theta_n_n1 = theta[n-1]
+        P_n_n1 = P[n-1] + Q
+
+        # update step
+        error[n] = y[n] - sigmoid(theta_n_n1.T @ X[n])
+        F_n = sigmoid_jacobian(theta_n_n1, X[n])
+        k_n = (P_n_n1 @ F_n.T) / (R + F_n @ P_n_n1 @ F_n.T)
+
+        theta[n] = theta_n_n1 + (k_n * error[n])
+        P[n] = (np.eye(2) - k_n @ F_n) @ P_n_n1
+
+    return theta, P, error
+
+def PF_LR(X, y, theta0, Q, R, Ns, resample=False):
+    # time length
+    N = X.shape[0]
+
+    theta = np.zeros((N, Ns, 2))
+    error = np.zeros(N)
+    weights = np.zeros((N, Ns))
+    ess = np.zeros(N)
+
+    # First two estimates are initial guesses
+    theta[:2] = theta0
+    weights[:2] = 1/Ns
+    ess[0] = ESS(weights[0])
+    ess[1] = ESS(weights[1])
+
+    for n in tqdm(range(2, N)):
+        weights_sum = 0
+        for i in range(Ns):
+            theta[n, i] = rng.multivariate_normal(theta[n-1, i], Q)
+            likelihood = st.norm.pdf(y[n], sigmoid(theta[n, i].T @ X[n]), R)
+            weights[n, i] = weights[n-1, i] * likelihood
+            
+            weights_sum += weights[n, i]
+
+        weights[n] = weights[n] / weights_sum
+        ess[n] = ESS(weights[n])
+
+        theta_mean = np.sum(weights[n][:, np.newaxis] * theta[n], axis=0)
+        error[n] = (y[n] - sigmoid(theta_mean.T @ X[n]))
+
+        if resample:
+            weights[n], theta[n] = sir_resample(weights[n], theta[n])
+        
+    return theta, weights, error, ess
+
+
+
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
+
+def sigmoid_jacobian(theta, x_n):
+    return sigmoid(theta.T @ x_n) * (1 - sigmoid(theta.T @ x_n)) * x_n
+
 
 if __name__ == '__main__':
     N = 100
