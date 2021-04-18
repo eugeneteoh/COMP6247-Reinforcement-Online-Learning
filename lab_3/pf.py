@@ -6,7 +6,7 @@ from copy import deepcopy
 from numpy.random import default_rng
 rng = default_rng(seed=42)
 
-def PF(sig, theta0, Q, R, Ns, resample=False):
+def PF(sig, theta0, Q, R, Ns, resample=False, resample_thres=1):
     N = sig.shape[0]
 
     theta = np.zeros((N, Ns, 2))
@@ -41,7 +41,8 @@ def PF(sig, theta0, Q, R, Ns, resample=False):
         error[n] = (sig[n] - theta_mean.T @ x_n)**2
 
         if resample:
-            weights[n], theta[n] = sir_resample(weights[n], theta[n])
+            if ess[n] / Ns <= resample_thres:
+                weights[n], theta[n] = sir_resample(weights[n], theta[n])
         
     return theta, weights, error, ess
 
