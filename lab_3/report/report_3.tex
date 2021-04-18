@@ -44,15 +44,15 @@ Task 1 presents my implementation of the Sequential Importance Sampling (SIS) an
 
 A second-order time-varying autoregressive time series identical to \cite{lab2} is generated with a time index, $T$ of 200.
 
-Initially, the Sequential Importance Sampling (SIS) algorithm described in \cite{particle_filters} was implemented. However, due to the recursive multiplication of weights, almost all particle weights become infinitesimally small except for one. This behaviour is shown in \cref{fig:sis-particle-weights}, where initially the size of the weights are equal. After several iterations, the weights are mostly focused on only one particle. This phenomenon is known as weight degeneracy. This signifies that the posterior distribution is majorly dependent on only one particle.
+Initially, the Sequential Importance Sampling (SIS) algorithm described \cite{particle_filters} was implemented. However, due to the recursive multiplication of weights, almost all particle weights become infinitesimally small except for one. This behaviour is shown in \cref{fig:sis-particle-weights}, where initially the size of the weights are equal. After several iterations, the weights are mostly focused on only one particle. This phenomenon is known as weight degeneracy. This signifies that the posterior distribution is majorly dependent on only one particle.
 
-To solve weight degeneracy, an extra resampling step \cite{particle_filters} is added to the original SIS algorithm, which is then known as Sequential Importance Resampling (SIR). For every iteration, the weights are resampled to have equal sizes, shown in \cref{fig:sir-particle-weights}. \cref{fig:ess} shows the Effective Sample Size (ESS) before and after introducing the resampling step. With resampling introduced, larger number of particles are effectively accounted to the estimation of the posterior PDF.
+To solve weight degeneracy, an extra resampling step \cite{particle_filters} is added to the original SIS algorithm, which is then known as Sequential Importance Resampling (SIR). For every iteration, the weights are resampled to have equal sizes, shown in \cref{fig:sir-particle-weights}. \cref{fig:ess} shows the Effective Sample Size (ESS) before and after introducing the resampling step. With resampling introduced, a larger number of particles are effectively accounted to the estimation of the posterior PDF.
 
 However, resampling at every time step may cause the particles to come from the same ancestor particle, thus causing path degeneracy \cite{lecture6}. Rather than resampling at every time step, one could resample when the ESS reduces to a certain threshold. In this experiment, a threshold of 60\% was set. This signifies that the resample will occur when the ESS reduces below 60\% of the total number of particles $N_s$.
 
 \cref{fig:results-1} shows the estimation of parameters $a_0$ and $a_1$ of the second-order time-varying auto-regressive time series using a Kalman Filter implemented in \cite{lab2ans}, SIS, SIR and SIR with threshold. The number of particles, $N_s$ is set to 100. It is shown that all four algorithms did not provide ``smooth'' estimations. This is potentially due to the original process model described in \cite{lab2} being a random walk model instead of being non-linear. The Mean Squared Error (MSE) calculated for the four algorithms implies that the performance is in the order: SIR with threshold, SIR, KF, SIS (best to worse). SIR is known to be able to solve non-linear state estimation. The results have proven the hypothesis.
 
-Sequential Monte Carlo methods (SIS and SIR) comes with an expense of computation time due to the repeated sampling. The average runtime for the three algorithm was calculated using \%timeit in Python and stated in the caption of \cref{fig:results-1}. SIS and SIR used almost 9 times as much time for computation. This is potentially an issue to be considered in high dimensional state space models.
+Sequential Monte Carlo methods (SIS and SIR) comes with an expense of computation time due to the repeated sampling. The average runtime for the three algorithms was calculated using \%timeit in Python and stated in the caption of \cref{fig:results-1}. SIS and SIR used almost 9 times as much time for computation. This is potentially an issue to be considered in high dimensional state-space models.
 
 \begin{figure}
     \begin{subfigure}{.5\textwidth}
@@ -218,9 +218,9 @@ Task 3 presents the pseudocode and results of the Particle Filter (PF) algorithm
      \label{algo:pf-lr}
 \end{algorithm}
 
-\cref{fig:error_pf-lr} shows the error plot of the particle filter. Both algorithms show similar results. However, the particle filter has more fluctuations of error. This is due to the small sample size $N_s$ that was used for the algorithm. Increasing $N_s$ will allow less fluctuations at the expense of computation time. The accuracy of classification for both algorithms has proved to be nearly identical.
+\cref{fig:error_pf-lr} shows the error plot of the particle filter. Both algorithms show similar results. However, the particle filter has more fluctuations of error. This is due to the small sample size $N_s$ that was used for the algorithm. Increasing $N_s$ will allow fewer fluctuations at the expense of computation time. The accuracy of classification for both algorithms has proved to be nearly identical.
 
-Note that both EKF and PF are non-optimal filters due to the approximations. However, the advantages of PF is that it is able to work with non-linear non-Gaussian state space models. PF converges to the optimal solution when number of particles $N_s$ approaches infinity. The EKF derivations assumes Gaussianity in the state space model, but is able to solve non-linear problems.
+Note that both EKF and PF are non-optimal filters due to the approximations. However, the advantages of PF is that it can work with non-linear non-Gaussian state-space models. PF converges to the optimal solution when the number of particles $N_s$ approaches infinity. The EKF derivations assume Gaussianity in the state-space model but can solve non-linear problems.
 
 
 \printbibliography
