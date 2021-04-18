@@ -44,7 +44,7 @@ Task 1 presents my implementation of the Sequential Importance Sampling (SIS) an
 
 A second-order time-varying autoregressive time series identical to \cite{lab2} is generated with a time index, $T$ of 200.
 
-Initially, the Sequential Importance Sampling (SIS) algorithm described in \cite{particle_filters} was implemented. However, due to the recursive multiplication of weights, almost all particle weights becomes infinitesimally small except for one. This behaviour is shown in \cref{fig:sis-particle-weights}, where initially the size of the weights are equal. After several iterations, the weights are mostly focused on only one particle. This phenomenon is known as weight degeneracy. This signifies that the posterior distribution is majorly dependent on only one particle.
+Initially, the Sequential Importance Sampling (SIS) algorithm described in \cite{particle_filters} was implemented. However, due to the recursive multiplication of weights, almost all particle weights become infinitesimally small except for one. This behaviour is shown in \cref{fig:sis-particle-weights}, where initially the size of the weights are equal. After several iterations, the weights are mostly focused on only one particle. This phenomenon is known as weight degeneracy. This signifies that the posterior distribution is majorly dependent on only one particle.
 
 To solve weight degeneracy, an extra resampling step \cite{particle_filters} is added to the original SIS algorithm, which is then known as Sequential Importance Resampling (SIR). For every iteration, the weights are resampled to have equal sizes, shown in \cref{fig:sir-particle-weights}. \cref{fig:ess} shows the Effective Sample Size (ESS) before and after introducing the resampling step. With resampling introduced, larger number of particles are effectively accounted to the estimation of the posterior PDF.
 
@@ -133,7 +133,7 @@ As mentioned above, \cref{eq:logistic} can be approximated by it's first-order T
 where the Jacobian is described as:
 
 \begin{equation}
-     \pmb{\hat{F}}_n = \pmb{\hat{F}}(\pmb{\theta}(n|n-1), \pmb{x}_n) = g(\pmb{\theta}(n|n-1)^T \pmb{x}_n)(1 - g(\pmb{\theta}(n|n-1)^T \pmb{x}_n)) \pmb{x}_n
+     \pmb{\hat{F}}_n = \pmb{\hat{F}}(\pmb{\theta}(n), \pmb{x}_n) = g(\pmb{\theta}(n|n-1)^T \pmb{x}_n)(1 - g(\pmb{\theta}(n|n-1)^T \pmb{x}_n)) \pmb{x}_n
 \end{equation}
 
 With the approximation above, the Extended Kalman Filter equations for the logistic regression problem are:
