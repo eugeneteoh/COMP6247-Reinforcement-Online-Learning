@@ -11,3 +11,5 @@ Each lab directory contains lab sheet, LaTeX report and Python notebook.
 [Lab 2: Kalman Filter](lab_2)
 
 [Lab 3: Kalman and Particle Filters; Online PCA](lab_3)
+
+[Lab 4: Reinforcement Learning](lab_4)
