@@ -37,7 +37,7 @@
 \addbibresource{report_4.bib}
 
 \usepackage{titling}
-\setlength{\droptitle}{-3cm}
+\setlength{\droptitle}{-2cm}
 
 \title{COMP6247 Final Assignment: Learning Controller}
 \author{Wei Chien Teoh (Eugene)\\\bigskip \href{mailto:wct1c16@soton.ac.uk}{wct1c16@soton.ac.uk}}
@@ -53,7 +53,7 @@ This report presents the findings and results for the final assignment of COMP62
 
 \section{Radial Basis Functions} \label{sec:rbf}
 
-In this section, we explore the use of Radial Basis Functions (RBF) on Reinforcement and Online Learning problems.
+This section explores the use of Radial Basis Functions (RBF) on Reinforcement and Online Learning problems.
 
 First, RBF is used to solve a non-linear regression problem. The Airfoil Self-noise Dataset~\cite{UCIMachineLearning} from the UCI repository of machine learning is used as the problem of interest for regression. The dataset consists of samples of aerodynamic and acoustic tests of airfoil blades conducted in a wind tunnel. The features given include:
 \begin{enumerate}
@@ -73,7 +73,7 @@ First, we attempt to solve the problem with a linear regression in closed form, 
     \item Gradient Descent (GD), epochs = 50000
     \item Mini-batch Stochastic Gradient Descent (SGD), batch size = 64, epochs = 10000
 \end{itemize}
-The Mean Squared Error (MSE) results are shown in \cref{tab:mse-regression}. Linear regression is shown to be insufficient in solving this problem, as the MSE calculated is substantially higher than RBF regression solutions. The RBF closed-form solution provided the optimal solution. Both gradient descent methods show convergence of the loss function and also provided similar results, as illustrated in \cref{fig:gd-loss}. Also SGD shows more fluctuations during the training, it requires fewer number of epochs before convergence. The loss of the gradient descent methods can be further optimised by lowering the learning rate or using adaptive methods.
+The Mean Squared Error (MSE) results are shown in \cref{tab:mse-regression}. Linear regression is shown to be insufficient in solving this problem, as the MSE calculated is substantially higher than RBF regression solutions. The RBF closed-form solution provided the optimal solution. Both gradient descent methods show convergence of the loss function and also provided similar results, as illustrated in \cref{fig:gd-loss}. Also, SGD shows more fluctuations during the training, it requires fewer epochs before convergence. The loss of the gradient descent methods can be further optimised by lowering the learning rate or using adaptive methods.
 
 \begin{table}
     \centering
@@ -123,7 +123,7 @@ Learning a controller involves learning an optimal policy. In Q learning, the ac
     \label{eq:optimal-V}
 \end{equation}
 
-The mountain car problem can be discretised into grids, where each block of the grid describes a state of which the car/agent is present. In this experiment, the problem is discretised into 40 states per state dimension (position and velocity). The Q function is tabularised with a dimension of $\mathbb{R}^{40 \times 40 \times 3}$, of which there exist $40 \times 40$ states and 3 actions, $a \in {-1, 0, 1}$ (left, neutral, right). The algorithm is performed for 1000 episodes, where the episode length is illustrated in \cref{fig:ep-length}. Note that the reward is described as -1 for every time step, thus the episode length can also be interpreted as the negative reward. For all experiments in this report, the $\epsilon$-greedy policy will be used during training, where $\epsilon$ is set to 0.05. The plot shows evidence of the convergence towards an optimal policy which maximises reward, synonymous to minimising episode length.
+The mountain car problem can be discretised into grids, where each block of the grid describes a state of which the car/agent is present. In this experiment, the problem is discretised into 40 states per state dimension (position and velocity). The Q function is tabularized with a dimension of $\mathbb{R}^{40 \times 40 \times 3}$, of which there exist $40 \times 40$ states and 3 actions, $a \in {-1, 0, 1}$ (left, neutral, right). The algorithm is performed for 1000 episodes, where the episode length is illustrated in \cref{fig:ep-length}. Note that the reward is described as -1 for every time step, thus the episode length can also be interpreted as the negative reward. For all experiments in this report, the $\epsilon$-greedy policy will be used during training, where $\epsilon$ is set to 0.05. The plot shows evidence of the convergence towards an optimal policy that maximises reward, synonymous with minimising episode length.
 
 \begin{figure}
     \centering
@@ -135,11 +135,11 @@ The mountain car problem can be discretised into grids, where each block of the 
 Following \cref{eq:optimal-V}, the optimal value function can be obtained by taking the maximum of the corresponding action with maximises the reward.
 
 % TODO: explain how to obtain X
-After obtaining the optimal value function, we attempt to approximate it using RBF regressors previously explored in \cref{sec:rbf}. However, an RBF sampler using the Random Kitchen Sink~\cite{rahimiRandomFeaturesLargeScale} algorithm will be used as an approximation to the RBF kernel. The RBF sampler approximates the RBF by using Monte Carlo random sampling of its Fourier transform. The number of basis functions, $J$ is varied and the centroids are randomly initialised. The scaling factor, $\sigma_j$ is set to $1.0$. Scaling does not provide significant effects to the results and thus is not further explored. Note that setting a global $\sigma_j$ will allow the RBF network to have universal approximation capability~\cite{wuUsingRadialBasis2012}. The RBF regressors are solved using the closed form solution.
+After obtaining the optimal value function, we attempt to approximate it using RBF regressors previously explored in \cref{sec:rbf}. However, an RBF sampler using the Random Kitchen Sink~\cite{rahimiRandomFeaturesLargeScale} algorithm will be used as an approximation to the RBF kernel. The RBF sampler approximates the RBF by using Monte Carlo random sampling of its Fourier transform. The number of basis functions, $J$ is varied and the centroids are randomly initialised. The scaling factor, $\sigma_j$ is set to $1.0$. Scaling does not provide significant effects on the results and thus is not further explored. Note that setting a global $\sigma_j$ will allow the RBF network to have universal approximation capability~\cite{wuUsingRadialBasis2012}. The RBF regressors are solved using the closed-form solution.
 
 % explain how to get approximated value function from approximated action-value function
 % can be re-written/improved
-\cref{fig:value-functions} shows both the true and several examples of approximated value functions with different basis functions. Lesser number of RBF basis functions causes the approximated value function landscape to be less refined, whereas greater number of basis functions produce landscapes which are visually different from the true landscape. The optimal approximation using RBF regression is with 20 basis functions, with an average reward of -128.4 and an MSE of 59 compared to the true value function. The approximated action-value functions are further reused as the optimal policy for the mountain car environment, of which the episode lengths are evaluated. The episode lengths and the MSE illustrated in \cref{fig:metrics-rbf} is shown to reflect the phenomenon shown in the value function landscapes. The episode length of lesser than 5 and greater than 25 basis functions does not converge even after 5000 steps. However, there are selected few (around 41 basis functions) that still provide good performances relative to the optimal value function (20 basis functions). The anomaly is potentially due to it's basis functions having similar shape to the true value function, even when it's MSE is shown to exponentially diverge from the true value function after 25 basis functions, illustrated in \cref{fig:mse-j}.
+\cref{fig:value-functions} shows both the true and several examples of approximated value functions with different basis functions. A lesser number of RBF basis functions causes the approximated value function landscape to be less refined, whereas a greater number of basis functions produce landscapes that are visually different from the true landscape. The optimal approximation using RBF regression is with 20 basis functions, with an average reward of -128.4 and an MSE of 59 compared to the true value function. The approximated action-value functions are further reused as the optimal policy for the mountain car environment, of which the episode lengths are evaluated. The episode lengths and the MSE illustrated in \cref{fig:metrics-rbf} is shown to reflect the phenomenon shown in the value function landscapes. The episode length of lesser than 5 and greater than 25 basis functions do not converge even after 5000 steps. However, there are selected few (around 41 basis functions) that still provide good performances relative to the optimal value function (20 basis functions). The anomaly is potentially due to its basis functions having a similar shape to the true value function, even when its MSE is shown to exponentially diverge from the true value function after 25 basis functions, illustrated in \cref{fig:mse-j}.
 
 
 \begin{figure}
@@ -185,7 +185,7 @@ After obtaining the optimal value function, we attempt to approximate it using R
 
 \subsection{TD Learning with Function Approximation}
 
-We previously attempted to solve the mountain car problem by tabular discretisation of Q Learning. We then explored the use of RBF Networks to approximate the tabular Q function. One could combine these two concepts by directly learning the weights of the function approximator using online learning methods such as stochastic gradient or bayesian inference. In this section, we will explore both on-policy and off-policy Temporal Difference learning methods, namely Q Learning and SARSA, of which the Q function will be approximated by RBF networks.
+We previously attempted to solve the mountain car problem by tabular discretisation of Q Learning. We then explored the use of RBF Networks to approximate the tabular Q function. One could combine these two concepts by directly learning the weights of the function approximator using online learning methods such as stochastic gradient or Bayesian inference. This section will explore both on-policy and off-policy Temporal Difference learning methods, namely Q Learning and SARSA, of which the Q function will be approximated by RBF networks.
 
 \begin{equation}
     Q(s, a) \approx \hat{q}(s, a) = \sum_{j = 1}^{J} w_j \phi(\Vert \pmb{x} - \pmb{m}_j \Vert / \pmb{\sigma}_j)
@@ -198,14 +198,14 @@ There are several advantages to function approximation of the Q function:
     \item Raw and unstructured data such as images can be directly be fed into the function approximator using state-of-the-art approaches such as Convolutional Neural Networks.
 \end{itemize}
 
-There are several approaches to the parameterization of the function approximator. Since Q takes both the states and actions as inputs, one could build a regressor for each action. However, it requires linear time to obtain the max or argmax of the action values. Alternatively, the RBF can be represented as a shallow neural network with multiple output nodes for each action \cite{mnihPlayingAtariDeep2013}. Computing the max or argmax would then only result in taking the maximum value of the outputs. Since it is a neural network, the weights, centres, and scaling parameters can also be learned through backpropagation. Both the neural network and the backpropagation approaches were attempted, but was unable to obtain a stable convergence of the Q function. This is potentially due to the large number of learnable parameters (including centres and scaling) and the stochasticity of the gradients in comparison to the small number of states and actions. Thus, the original linear time approach will be used in this experiment.
+There are several approaches to the parameterization of the function approximator. Since Q takes both the states and actions as inputs, one could build a regressor for each action. However, it requires linear time to obtain the max or argmax of the action values. Alternatively, the RBF can be represented as a shallow neural network with multiple output nodes for each action \cite{mnihPlayingAtariDeep2013}. Computing the max or argmax would then only result in taking the maximum value of the outputs. Since it is a neural network, the weights, centres, and scaling parameters can also be learned through backpropagation. Both the neural network and the backpropagation approaches were attempted but were unable to obtain a stable convergence of the Q function. This is potentially due to a large number of learnable parameters (including centres and scaling) and the stochasticity of the gradients in comparison to the small number of states and actions. Thus, the original linear time approach will be used in this experiment.
 
-Again, the RBF kernel was approximated using the Random Kitchen Sink algorithm with $\sigma_j$ as $1.0$. As before, $\sigma_j$ will not be tuned or modified in the experiments, as the objective in this section is to attempt to successfully utilise function approximation to further improve on previous methods. Three regressors were built for each action. The regressors were trained for 500 episodes. It should be noted that it required more time, approximately 4 times on average to train the function approximators. Five different number of basis functions, $J = (5, 10, 15, 20, 50)$ was used, and finally the one with maximum reward is selected and illustrated in \cref{fig:func_approx}. Both plots did not achieve approximations as well as those in \cref{fig:value-functions}. This is potentially due to the stochasticity and the insufficient episodes due to time constraints. The stochasticity is caused by updating the gradient descent only one sample at a time. \emph{Experience replay} can be introduced to solve this, where the experiences at each time step, $e_t = (s_t, a_t, r_t, s_{t+1})$ is stored over many episodes to perform mini-batch updates of gradient descent. In spite of the approximations, both Q Learning and SARSA with function approximation provided comparative rewards to the tabular method.
+Again, the RBF kernel was approximated using the Random Kitchen Sink algorithm with $\sigma_j$ as $1.0$. As before, $\sigma_j$ will not be tuned or modified in the experiments, as the objective in this section is to attempt to successfully utilise function approximation to further improve on previous methods. Three regressors were built for each action. The regressors were trained for 500 episodes. It should be noted that it required more time, approximately 4 times on average to train the function approximators. Five different number of basis functions, $J = (5, 10, 15, 20, 50)$ was used, and finally, the one with maximum reward is selected and illustrated in \cref{fig:func_approx}. Both plots did not achieve approximations as well as those in \cref{fig:value-functions}. This is potentially due to the stochasticity and the insufficient episodes due to time constraints. The stochasticity is caused by updating the gradient descent only one sample at a time. \emph{Experience replay} can be introduced to solve this, where the experiences at each time step, $e_t = (s_t, a_t, r_t, s_{t+1})$ is stored over many episodes to perform mini-batch updates of gradient descent. Despite the approximations, both Q Learning and SARSA with function approximation provided comparative rewards to the tabular method.
 
 % TODO: Talk about Q Learning vs SARSA
 % TODO: Add episode length plot
 
-From the discussion and analysis above, it can be concluded that both tabular and function approximation approaches to TD learning were able to successfully solve the mountain car problem in with descent rewards. As the scale of the problem is small, the tabular discretisation method is proven to be the better choice, exceeding the function approximation method in the number of hyperparameters to tune,training time and expected reward.
+From the discussion and analysis above, it can be concluded that both tabular and function approximation approaches to TD learning were able to successfully solve the mountain car problem with decent rewards. As the scale of the problem is small, the tabular discretisation method is proven to be the better choice, exceeding the function approximation method in the number of hyperparameters to tune, training time and expected reward.
 
 \begin{figure}
     \centering
@@ -227,7 +227,7 @@ From the discussion and analysis above, it can be concluded that both tabular an
 
 \subsection{Resource-Allocating Network}
 
-In previous sections, the number of basis functions, $J$ was arbitrarily tuned by sweeping multiple different values. Such tuning method is often impractical due to the large amount of time required. A Resource-Allocating Network~\cite{plattResourceallocatingNetworkFunction1991} (RAN) allow the RBF network to grow in it's number of basis functions in an online setting, using stochastic gradient descent. RAN is able to find the optimal number of basis functions by learning from the presented data. RAN grows its network by considering two conditions:
+In previous sections, the number of basis functions, $J$ was arbitrarily tuned by sweeping multiple different values. Such a tuning method is often impractical due to a large amount of time required. A Resource-Allocating Network~\cite{plattResourceallocatingNetworkFunction1991} (RAN) allow the RBF network to grow in its number of basis functions in an online setting, using stochastic gradient descent. RAN can find the optimal number of basis functions by learning from the presented data. RAN grows its network by considering two conditions:
 
 \begin{equation}
     \begin{split}
@@ -244,7 +244,7 @@ where:
 \end{itemize}
 
 
-Such approach can be extended to TD learning methods, where RAN can be combined with function approximation. An example of Q learning with RAN is shown in \cref{algo:ran}. The algorithm can also be modified to work with SARSA by changing the TD error to using the same policy (e.g. $\epsilon$-greedy).
+Such an approach can be extended to TD learning methods, where RAN can be combined with function approximation. An example of Q learning with RAN is shown in \cref{algo:ran}. The algorithm can also be modified to work with SARSA by changing the TD error to using the same policy (e.g. $\epsilon$-greedy).
 
 \begin{algorithm}[htb!]
     \SetAlgoLined
@@ -279,13 +279,13 @@ Such approach can be extended to TD learning methods, where RAN can be combined 
     \label{algo:ran}
 \end{algorithm}
 
-Suppose the model is non-linear, which an RBF network is of that, one can further extended the RAN algorithm by replacing the Least Mean Squares (LMS) algorithm (or SGD) with non-linear state estimation methods. The EKF is shown to work relatively well~\cite{kadirkamanathanFunctionEstimationApproach1993}. If the model is highly non-linear, bayesian inference methods such as Sequential Importance Sampling is also feasible.
+Suppose the model is non-linear, which an RBF network is of that, one can further extend the RAN algorithm by replacing the Least Mean Squares (LMS) algorithm (or SGD) with non-linear state estimation methods. The EKF is shown to work relatively well~\cite{kadirkamanathanFunctionEstimationApproach1993}. If the model is highly non-linear, Bayesian inference methods such as Sequential Importance Sampling is also feasible.
 
 \section{Learning to Optimize Neural Nets: Review}
 
 The paper ``Learning to Optimize Neural Nets''~\cite{liLearningOptimizeNeural2017} proposes a framework for learning optimization algorithms using reinforcement learning. Learning to optimize is a difficult problem as there exist many different types of objective functions, input data, and learning algorithms. Previous work from Bengio et al.~\cite{LearningSynapticLearning} proposed a way to learn the formula used to update the model parameters during learning. However, the learned formula does not take the objective function into account, thus generalisation is an issue. Maclaurin et al.~\cite{maclaurinGradientbasedHyperparameterOptimization2015} proposed to learn regularization hyperparameters and learning rate scheduler. However, the generalization of hyperparameters to other objective functions was not considered. More recently, Andrychowicz et al.~\cite{andrychowiczLearningLearnGradient2016} proposed a method to learn from the objective function through backpropagation on a particular task using supervised learning. Again, the method fails to generalise to unseen objective functions, thus only allowing it to be applicable in specific tasks the model is trained on. The method which this paper proposes attempts to learn to optimize task-independent objective functions. The problem can be represented as a reinforcement learning problem, where an optimal policy is learned by rewarding those that converge quickly and penalizing those that do not. It will not depend on the data it is given but rather only the environment it interacts with. The author claims this approach could solve the generalisation problem of learning to optimize.
 
-Rather than maximizing over rewards, the optimal policy to be will be minimizing the expectation over a sequence of states and actions of the summation of the cost $c$. The cost in this case is the true objective value $f(x^{(t)})$. 
+Rather than maximizing rewards, the optimal policy to be will be minimizing the expectation over a sequence of states and actions of the summation of the cost $c$. The cost in this case is the true objective value $f(x^{(t)})$. 
 
 \begin{equation}
     \pi^{*} = \argmin_{\pi} \mathbb{E}_{s_0, a_0, s_1, \cdots, s_T} [\sum_{t=0}^{T} c(s_t)]
@@ -305,7 +305,7 @@ The state $s_t$ include:
 
 The action $a_t$ is the update to the iteration $\Delta x$.
 
-With the optimization problem defined above, it can then be solved with any reinforcement learning algorithm which is able to obtain the optimal policy $\pi^*$. The author proposed the use of Guided Policy Search (GPS). GPS introduces a new policy, $\psi$. The algorithm performs policy optimization on $\psi$, then uses it to train $\pi$. The constrained optimization problem of GPS is defined in \cref{eq:gps}. The constraints can further be relaxed by equating it's expectations. The problem can then be solved using constrained optimization algorithms, such as ADMM.
+With the optimization problem defined above, it can then be solved with any reinforcement learning algorithm which can obtain the optimal policy $\pi^*$. The author proposed the use of Guided Policy Search (GPS). GPS introduces a new policy, $\psi$. The algorithm performs policy optimization on $\psi$, then uses it to train $\pi$. The constrained optimization problem of GPS is defined in \cref{eq:gps}. The constraints can further be relaxed by equating its expectations. The problem can then be solved using constrained optimization algorithms, such as ADMM.
 
 \begin{equation}
     \begin{split}
@@ -315,11 +315,11 @@ With the optimization problem defined above, it can then be solved with any rein
     \label{eq:gps}
 \end{equation}
 
-In the experiments, the author uses shallow neural nets to train on the MNIST dataset and then tested on TFD, CIFAR-10 and CIFAR-100. The training set only consisted of one objective function, the cross-entropy loss. The experimental results has shown to work better than existing popular optimization algorithms on both the training and test datasets, especially compared to Maclaurin et al.'s work. The author successfully showed that it scales to larger neural net architectures, noisy gradients and longer time horizons.
+In the experiments, the author uses shallow neural nets to train on the MNIST dataset and then tested on TFD, CIFAR-10 and CIFAR-100. The training set only consisted of one objective function, the cross-entropy loss. The experimental results have shown to work better than existing popular optimization algorithms on both the training and test datasets, especially compared to Maclaurin et al.'s work. The author successfully showed that it scales to larger neural net architectures, noisy gradients and longer time horizons.
 
 However, there are several caveats with the experiments. The experiments only involve datasets of images, trained and tested on only one objective function. Thus, it does not fully reflect on their claim on generalising to different objective functions and tasks. Although the author attempted on larger models, it is nowhere the scale of state-of-the-art architectures such as ResNets. Moving forward, more experiments on state-of-the-art and larger models should be included, along with different data types.
 
-Stemming from the paper, there are several open challenges that can further improve this work. First, one can improve on the algorithm to learn the intractable expectation in \cref{eq:optimal-policy}. Current reinforcement learning methods have a high variance and are highly susceptible to vanishing and exploding gradient problems. Secondly, one can improve on the generalisation of optimization algorithm trained on low-dimensional problems to high-dimensional problems.
+Stemming from the paper, several open challenges can further improve this work. First, one can improve on the algorithm to learn the intractable expectation in \cref{eq:optimal-policy}. Current reinforcement learning methods have high variance and are highly susceptible to vanishing and exploding gradient problems. Secondly, one can improve on the generalisation of optimization algorithm trained on low-dimensional problems to high-dimensional problems.
 
 \printbibliography
 
